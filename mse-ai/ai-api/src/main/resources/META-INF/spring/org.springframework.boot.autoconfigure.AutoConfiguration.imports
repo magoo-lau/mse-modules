@@ -1,0 +1,4 @@
+vip.mseapp.ai.api.autoconfigure.AiToolRegistryAutoConfiguration
+vip.mseapp.ai.api.autoconfigure.AiAgentRegistryAutoConfiguration
+vip.mseapp.ai.api.autoconfigure.AiKbRegistryAutoConfiguration
+vip.mseapp.ai.api.autoconfigure.AiBizModuleRegistryAutoConfiguration

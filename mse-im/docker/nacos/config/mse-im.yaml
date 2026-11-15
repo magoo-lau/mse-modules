@@ -1,0 +1,85 @@
+# ==================== mse-im 专属配置（Data ID: mse-im.yaml    Group: DEFAULT_GROUP） ====================
+# 本文件是服务 application.yaml 的本地留档：经 init-configs.sh 写入 Nacos 后由配置中心管理，
+# 共享项（数据源/Redis/Sa-Token/Dubbo）见 mse-micro-common/db/dubbo.yaml。
+# 注意：/im/sso/exchange 免登录（code 即一次性凭证），网关白名单已放行
+# （mse-framework/docker/nacos/config/mse-gateway.yaml 的 mse.gateway.ignore-urls）。
+server:
+  port: 8099
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+spring:
+  servlet:
+    multipart:
+      # 业务口径（工作台图标/头像 ≤2MB）之上留余量，超限交给业务校验出中文提示而非容器层 500
+      max-file-size: 5MB
+      max-request-size: 10MB
+  datasource:
+    dynamic:
+      # Seata 已随 micro-starter 内置、默认关停（MSE_SEATA_ENABLED=false）：显式关闭数据源 Seata 代理开关
+      seata: false
+
+mse:
+  im:
+    # 总开关：false 时所有端点返回「IM 功能未开通」（客户端据此隐藏聊天入口）
+    enabled: ${MSE_IM_ENABLED:true}
+    # 实例 secret 密文加密密钥（台账 secret_enc 落库用）：生产必须修改并妥善保管；
+    # 更换密钥后历史密文无法解密，需重新录入实例密钥
+    crypt-key: ${MSE_IM_CRYPT_KEY:mse-im-default-crypt-key-please-change}
+    # 工作台跳转基址全局缺省（聊天客户端免登跳转的 mse Web 端地址；
+    # 租户可在「IM 设置」按行覆盖，错值自动回落本缺省）
+    web-base-url: ${MSE_IM_WEB_BASE_URL:http://localhost:3000}
+    # 默认实例（未命中 servers 的租户走它；standalone/单实例只配这段）。
+    # secret 与 OpenIM 实例 config/share.yml 顶层 secret 一致，生产必须更换并妥善保管（绝不提交仓库）；
+    # 缺省留空 = 使用时明确报「缺少 secret 配置」，避免出厂默认凭据
+    server:
+      api-url: ${MSE_IM_API_URL:http://127.0.0.1:10002}
+      ws-url: ${MSE_IM_WS_URL:ws://127.0.0.1:10001}
+      # 公网坐标：生产为同域名反代（方案 docs/tech/openim-integration.md 4.1），缺省回落内网值
+      public-api-url: ${MSE_IM_PUBLIC_API_URL:}
+      public-ws-url: ${MSE_IM_PUBLIC_WS_URL:}
+      secret: ${MSE_IM_SECRET:}
+      admin-user-id: ${MSE_IM_ADMIN_USER_ID:imAdmin}
+    # 按租户覆盖（key = 租户编号）：多租户绑多实例 = 改这里，Nacos 热更新即生效。示例：
+    # servers:
+    #   "2":
+    #     api-url: http://10.0.0.11:10002
+    #     public-api-url: https://im.tenant-b.com/api
+    #     public-ws-url: wss://im.tenant-b.com/msg_gateway
+    #     secret: ${MSE_IM_T2_SECRET:}
+    #     admin-user-id: imAdmin
+    servers: {}
+    sso:
+      code-ttl-seconds: 60          # 一次性 code 有效期
+      issue-rate-limit: 30          # 同用户 60s 窗口内签发上限（客户端点击时才签发）
+      allow-empty-origin: false     # 浏览器必带 Origin 才可兑换（curl 联调可临时开启）
+    client:
+      timeout-ms: 5000
+      admin-token-refresh-ahead-seconds: 600
+    ssrf:
+      # 租户自助录入 api-url 的内网网段白名单（IPv4 CIDR 或 loopback）：
+      # 内网部署 OpenIM 实例时保留；纯云托管/公网实例可清空收紧
+      allow-private-cidrs:
+        - loopback
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+    callback:
+      # mse-im 对 OpenIM 实例可达的基址（回填租户 webhooks.yml 的 url 前缀）
+      base-url: ${MSE_IM_CALLBACK_BASE_URL:http://127.0.0.1:8080}
+    provision:
+      # 开通平台编排（P2）：enabled=true 且宿主机 docker CLI 可用时，/im/provision/** 可用
+      enabled: ${MSE_IM_PROVISION_ENABLED:false}
+      template-dir: ${MSE_IM_PROVISION_TEMPLATE_DIR:docker/openim}
+      data-root: ${MSE_IM_PROVISION_DATA_ROOT:./im-provision-data}
+      port-base: 11000
+      block-size: 10
+      health-timeout-seconds: 180
+
+# ==================== 信创数据库切换 ====================
+# 达梦/金仓的数据源与方言由共享 mse-micro-db.yaml 的 dm/kingbase profile 提供，
+# 启动加 --spring.profiles.active=dm 或 kingbase 即切换，本文件无需重复配置。

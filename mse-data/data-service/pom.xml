@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-data</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>data-service</artifactId>
+    <name>data-service</name>
+    <description>数据中台业务积木（纯 jar，无 main）：数据源管理 + 元数据/数据地图 + 数据集成同步 + 数据服务 API</description>
+
+    <dependencies>
+        <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-web</artifactId>
+        </dependency>
+        <!-- mse-ai 平台契约：智能查询（text2sql）经平台智能体调用本服务的受控查询工具（biz↔biz 依赖，显式版本） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>ai-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-security</artifactId>
+        </dependency>
+        <!-- 本工程契约 + 开放平台契约（开放能力自注册） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>data-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>open-api</artifactId>
+        </dependency>
+        <!-- Excel 导出（版本由基座 BOM 仲裁） -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
+        <!-- 测试积木：JUnit 5（仅 test 范围）——biz_query 工具检索逻辑（keyword 数组合并/空结果终止语义）单测 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

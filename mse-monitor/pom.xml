@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 独立工程：parent 指向基座 mse-starter-parent（编译/插件/BOM/仓库统一收编，随框架 mvn install），
+         仅通过 BOM 消费基座发布件（积木式组装），不属于 ai-mse 聚合模块 -->
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-starter-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>vip.mseapp</groupId>
+    <artifactId>mse-monitor</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>mse-monitor</name>
+    <description>监控中心：服务/中间件/操作系统监控（monitor-service）+ 启动器（monitor-boot）</description>
+
+    <modules>
+        <module>monitor-service</module>
+        <module>monitor-boot</module>
+    </modules>
+
+    <properties>
+        <!-- 基座 BOM 未仲裁的补充版本：OSHI 本机系统采集 + RocketMQ 集群探测（与服务端 5.3.1 对齐） -->
+        <oshi.version>6.8.1</oshi.version>
+        <rocketmq-tools.version>5.3.1</rocketmq-tools.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-tools</artifactId>
+                <version>${rocketmq-tools.version}</version>
+            </dependency>
+            <!-- 本工程模块 -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>monitor-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

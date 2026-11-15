@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-open</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>open-service</artifactId>
+    <name>open-service</name>
+    <description>开放平台业务积木（纯 jar，无 main）：应用注册/凭证加密/access_token 签发/开放 API 鉴权链（授权+限流+审计）+ 用户/组织能力开放 API</description>
+
+    <dependencies>
+        <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-security</artifactId>
+        </dependency>
+        <!-- 本工程注册契约（目录自注册接收端：RemoteOpenApiRegistry 实现 + 泛化分发参数 DTO） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>open-api</artifactId>
+        </dependency>
+        <!-- 泛化分发：dubbo 模式编程式 GenericService 调用业务契约（mse-open 不引任何业务 jar）。
+             provided 不传递——单体聚合本积木时不带入 dubbo（单体走 local 反射分发）；
+             微服务 open-boot 的 fat jar 由 micro-starter 传递提供运行期 dubbo -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 泛化分发编程式配置（DubboRuntimeConfigs）：运行期由 micro-starter 传递提供 -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>common-rpc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 契约积木：跨模块查询租户状态（open_app 绑定租户校验）的唯一合法依赖 -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-tenant</artifactId>
+        </dependency>
+        <!--
+            中台包装层定位：open-service 的用户/部门/角色开放 API 经基座契约调用
+            （RemoteUserService/RemoteDeptService/RemoteRoleService，@RpcReference 注入）——
+            单体 local 模式本地直调，微服务 dubbo 模式远程调用 mse-system，本积木不直连 sys_* 表。
+        -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-system</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+    </dependencies>
+</project>

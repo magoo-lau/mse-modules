@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-ai</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ai-boot</artifactId>
+    <name>ai-boot</name>
+    <description>AI 平台微服务启动器：micro-starter + ai-service + MCP Server（开关控制）；mse.rpc.mode 默认 dubbo，启动即注册供网关 lb://mse-ai 路由</description>
+
+    <dependencies>
+        <!-- 微服务形态入口启动器：Nacos 配置/注册 + Dubbo RPC（mse.rpc.mode 默认 dubbo）+ 基座契约消费桥接
+             （鉴权数据源 @SaCheckPermission / 独立库租户路由 / 操作日志 RPC 回退，本服务不打包基座 HTTP 接口）
+             + Seata 内置 + actuator + 三方言 JDBC 驱动 -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>micro-starter</artifactId>
+        </dependency>
+        <!-- 自有业务积木 -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>ai-service</artifactId>
+        </dependency>
+        <!-- MCP Server（可选开关 mse.ai.mcp-server-enabled=true）：把平台工具/智能体暴露为 MCP 端点；
+             starter 的自动装配在未开启时零副作用 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
+        </dependency>
+        <!-- 编排代码节点的 JS 引擎（GraalJS 社区版聚合 POM，运行期依赖；polyglot API 由 ai-service 传递） -->
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>js-community</artifactId>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

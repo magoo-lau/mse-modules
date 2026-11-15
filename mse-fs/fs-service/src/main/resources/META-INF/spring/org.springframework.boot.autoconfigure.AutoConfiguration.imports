@@ -1,0 +1,3 @@
+vip.mseapp.fs.autoconfigure.FsServiceAutoConfiguration
+vip.mseapp.fs.autoconfigure.FsStorageAutoConfiguration
+vip.mseapp.fs.autoconfigure.FsControllerAutoConfiguration

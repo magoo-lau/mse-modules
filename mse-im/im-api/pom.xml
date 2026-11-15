@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-im</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>im-api</artifactId>
+    <name>im-api</name>
+    <description>IM 跨服务 RPC 契约（预留）：P0 阶段无对外契约，仅包结构占位；后续在线状态/会话查询契约按「接口 + Serializable DTO」规范登记</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>

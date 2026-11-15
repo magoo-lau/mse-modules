@@ -1,0 +1,53 @@
+# ==================== mse-fs 专属配置（Data ID: mse-fs.yaml    Group: DEFAULT_GROUP） ====================
+# 本文件是服务 application.yaml 的本地留档：经 init-configs.sh 写入 Nacos 后由配置中心管理，
+# 共享项（数据源/Redis/Sa-Token/MyBatis-Plus/Dubbo/租户开关）见 mse-micro-common/db/dubbo.yaml。
+# 导入：CONFIG_DIR="$PWD/docker/nacos/config" sh ../../mse-framework/docker/nacos/init-configs.sh
+server:
+  port: 8095
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,slowsql
+
+spring:
+  servlet:
+    multipart:
+      # 文件上传上限（按需调整；RPC 契约上传走 base64，另有契约自身的大小预算）
+      max-file-size: ${MSE_FS_MAX_FILE_SIZE:100MB}
+      max-request-size: ${MSE_FS_MAX_REQUEST_SIZE:100MB}
+  datasource:
+    dynamic:
+      # Seata 已随 micro-starter 内置、默认关停（MSE_SEATA_ENABLED=false）：显式关闭数据源 Seata 代理开关
+      # （启用全局事务：置 MSE_SEATA_ENABLED=true 后删除本行即可恢复 true）
+      seata: false
+
+mse:
+  fs:
+    storage:
+      # 存储实现：local（本地文件系统，缺省）/ rustfs（RustFS 1.x，S3 兼容对象存储）
+      # fs-boot 已引入 AWS SDK，两种模式可随时经本配置切换（运行期修改后重启生效）
+      type: ${MSE_FS_STORAGE_TYPE:local}
+      local:
+        # 本地存储根目录（生产挂载持久卷）；按 {tenantId}/ 子目录隔离租户
+        base-dir: ${MSE_FS_BASE_DIR:./fs-files}
+      rustfs:
+        # RustFS S3 兼容端点与凭据（对应 docker/rustfs/compose.yaml 的 RUSTFS_ACCESS_KEY/SECRET_KEY）
+        endpoint: ${MSE_FS_ENDPOINT:http://localhost:9000}
+        access-key: ${MSE_FS_ACCESS_KEY:rustfsadmin}
+        secret-key: ${MSE_FS_SECRET_KEY:rustfsadmin}
+        # 桶名（不存在时服务启动自动创建）；桶内按 {tenantId}/ 前缀隔离租户
+        bucket: ${MSE_FS_BUCKET:mse-fs}
+        region: ${MSE_FS_REGION:us-east-1}
+        # path-style 寻址（RustFS 单机部署必须 true）
+        path-style-access: true
+      presign:
+        # 预签名直链开关（仅 rustfs 模式生效；默认关闭，下载统一走服务端代理以保留鉴权与审计）
+        enabled: ${MSE_FS_PRESIGN_ENABLED:false}
+        # 预签名有效期（秒）
+        ttl-seconds: ${MSE_FS_PRESIGN_TTL:3600}
+
+# ==================== 信创数据库切换 ====================
+# 达梦/金仓的数据源与方言由共享 mse-micro-db.yaml 的 dm/kingbase profile 提供，
+# 启动加 --spring.profiles.active=dm 或 kingbase 即切换，本文件无需重复配置。

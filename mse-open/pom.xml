@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 独立工程：parent 指向基座 mse-starter-parent（编译/插件/BOM/仓库统一收编，随框架 mvn install），
+         仅通过 BOM 消费基座发布件（积木式组装），不属于 ai-mse 聚合模块 -->
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-starter-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>vip.mseapp</groupId>
+    <artifactId>mse-open</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>mse-open</name>
+    <description>业务中台/开放平台：应用注册与凭证（open-service）+ 启动器（open-boot），把基座用户/组织/权限能力开放给其他系统</description>
+
+    <modules>
+        <module>open-api</module>
+        <module>open-service</module>
+        <module>open-boot</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 本工程模块 -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>open-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>open-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

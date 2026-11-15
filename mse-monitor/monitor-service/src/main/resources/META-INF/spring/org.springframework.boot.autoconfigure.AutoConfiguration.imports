@@ -1,0 +1,2 @@
+vip.mseapp.monitor.autoconfigure.MonitorServiceAutoConfiguration
+vip.mseapp.monitor.autoconfigure.MonitorControllerAutoConfiguration

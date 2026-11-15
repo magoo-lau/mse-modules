@@ -1,0 +1,28 @@
+# ==================== RustFS 1.x 单机部署（mse-fs 的对象存储后端，可选） ====================
+# RustFS 完全兼容 S3 协议；不部署时 mse-fs 走本地文件存储（mse.fs.storage.type=local），无需本服务。
+# 启动：docker compose -f docker/rustfs/compose.yaml up -d
+# 控制台：http://localhost:9001（默认账号 rustfsadmin/rustfsadmin，生产必须修改）
+# 生产建议：镜像钉住确定的 1.x 版本 tag（如 rustfs/rustfs:1.0.0-alpha.83-glibc 或更新稳定版），
+#           并用环境变量 RUSTFS_ACCESS_KEY/RUSTFS_SECRET_KEY 覆盖默认凭据（与 Nacos mse-fs.yaml 对应）。
+services:
+  mse-rustfs:
+    image: ${MSE_RUSTFS_IMAGE:-rustfs/rustfs:latest}
+    container_name: mse-rustfs
+    ports:
+      - "9000:9000" # S3 兼容 API
+      - "9001:9001" # 管理控制台
+    environment:
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+    volumes:
+      - rustfs-data:/data
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  rustfs-data:

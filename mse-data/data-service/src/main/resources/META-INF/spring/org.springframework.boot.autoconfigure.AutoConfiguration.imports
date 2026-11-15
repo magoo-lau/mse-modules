@@ -1,0 +1,2 @@
+vip.mseapp.data.autoconfigure.DataServiceAutoConfiguration
+vip.mseapp.data.autoconfigure.DataControllerAutoConfiguration

@@ -1,0 +1,58 @@
+# ==================== mse-search 专属配置（Data ID: mse-search.yaml    Group: DEFAULT_GROUP） ====================
+# 本文件是服务 application.yaml 的本地留档：经 init-configs.sh 写入 Nacos 后由配置中心管理，
+# 共享项（master 数据源/Redis/Sa-Token/MyBatis-Plus/Dubbo/租户开关/Seata）见 mse-micro-common/db/dubbo.yaml。
+# 导入：CONFIG_DIR=<本目录> sh mse-framework/docker/nacos/init-configs.sh
+server:
+  port: 8096
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,slowsql
+
+spring:
+  elasticsearch:
+    # Elasticsearch 9.x（docker-compose mse-elasticsearch，单节点免鉴权基线）；
+    # 客户端 elasticsearch-java 9.2.9 版本由基座 BOM 仲裁，服务端取 9.2 线最新 9.2.8（9.2.9 tag 不存在）
+    uris: http://${MSE_ES_HOST:localhost}:9200
+    # 开启 ES 安全后的凭据示例：
+    # username: elastic
+    # password: ${MSE_ES_PASSWORD:}
+
+mse:
+  service:
+    search:
+      controller:
+        enabled: true
+  search:
+    # 索引名前缀（索引 = mse-search-{sourceCode 小写}，':' 为 ES 跨集群保留字符会替换为 '_'）
+    index-prefix: mse-search
+    # 中文分析器：ES 自带 smartcn（镜像已预装 analysis-smartcn）；换 IK 时建
+    # ik_max_word 并为已有索引重建（分析器在建索引时固化）
+    analyzer: smartcn
+    # 闲时窗口（逗号分段 HH:mm-HH:mm，支持跨天）：idleOnly 任务仅窗口内执行、
+    # 窗口内扫描批间不限流全速
+    idle-window: 00:00-07:00
+    # 源目录注册推送接收（mse-search 侧 register 契约；消费端开关在业务侧 mse.search.registry.*）
+    registry:
+      interval-minutes: 5
+    scan:
+      enabled: true
+      poll-interval-ms: 20000
+      initial-delay-ms: 30000
+      # 忙时批间限流毫秒（闲时窗口内自动 0）
+      batch-interval-ms: 500
+      # 单次扫描每源最大批次数（防雪崩；全量重建任务不受限）
+      max-batches-per-tick: 200
+      default-cron: "0 */10 * * * ?"
+      default-batch-size: 500
+      default-shard-count: 1
+    task:
+      enabled: true
+      poll-interval-ms: 30000
+      initial-delay-ms: 30000
+
+# ==================== 信创数据库切换（可选 profile，默认 MySQL 不受影响） ====================
+# master 数据源与方言由共享 mse-micro-db.yaml 的 dm/kingbase profile 提供，
+# 启动加 --spring.profiles.active=dm 或 kingbase 即切换；初始化脚本见 mse-search/sql/dameng、mse-search/sql/kingbase

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-ai</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ai-service</artifactId>
+    <name>ai-service</name>
+    <description>AI 平台业务积木（纯 jar，无 main，SPI 自装配）：模型中心 / 对话 / 智能体 / 工具中心 / 知识库 RAG / 开放 API</description>
+
+    <dependencies>
+        <!-- 自有契约积木：对外 RPC 契约的实现方 -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>ai-api</artifactId>
+        </dependency>
+        <!-- 开放平台契约：开放能力自注册（OpenApiContributor 推送 mse-open 目录） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>open-api</artifactId>
+        </dependency>
+        <!-- 文件存储契约：知识库原文件归档走 mse-fs（FsAvailableCondition 判定；未引入降级本地目录） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-fs</artifactId>
+        </dependency>
+        <!-- 基座租户契约：平台端租户下拉选择（单体本地直调 / 微服务 Dubbo，mse-open 同款接法） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-tenant</artifactId>
+        </dependency>
+        <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-rpc</artifactId>
+        </dependency>
+        <!-- AI 基础设施装配基线（ChatClient 语义与平台一致；本积木自带动态多模型工厂） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-ai</artifactId>
+        </dependency>
+        <!-- Spring AI：OpenAI 兼容协议（DeepSeek/智谱/Ollama 均为此协议），版本由基座 BOM 仲裁（2.0.1）。
+             只引 spring-ai-openai 核心包（编程式构建模型），不引 starter——避免其自动装配
+             在未配 spring.ai.openai.api-key 时阻断启动；模型连接经 ai_model 表动态管理 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-openai</artifactId>
+        </dependency>
+        <!-- Spring AI：Claude 原生 Messages 协议（protocol=anthropic-messages 时动态构建；
+             2.0 经官方 anthropic-java 客户端，同样只引核心包不引 starter） -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-anthropic</artifactId>
+        </dependency>
+        <!-- Spring AI ChatClient 与 Advisor API（BaseAdvisor，自定义 KbRagAdvisor 检索增强挂载；
+             2.0 起 QuestionAnswerAdvisor 仅单路向量召回，知识库改走自研混合检索管线） -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-client-chat</artifactId>
+        </dependency>
+        <!-- Milvus Java SDK 与向量库基建（经此传递带入 io.milvus:milvus-sdk-java 2.6 + gson，
+             版本由基座 BOM 仲裁；程序式装配 KbVectorClient 直用 V2 SDK 的 hybrid_search——
+             Spring AI MilvusVectorStore 抽象不支持 BM25 全文检索，不再实例化。
+             mse.ai.milvus-enabled=true 时由 KbVectorConfig 构建，未部署 Milvus 不阻断启动） -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-milvus-store</artifactId>
+        </dependency>
+        <!-- 文档解析（PDF/Word/HTML 等，Tika 门面） -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-tika-document-reader</artifactId>
+        </dependency>
+        <!-- MCP 客户端：动态接入外部 MCP Server 为工具 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-mcp-client</artifactId>
+        </dependency>
+        <!-- Jackson 3（tools.jackson）：AiJson 统一 JSON 入口（工具入参/出参、工作流变量），与 Boot 4 / Spring AI 2 同栈；
+             显式声明避免依赖 jinjava 等上游传递（Jackson 2）双轨并存 -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- 工作流模板节点渲染（Jinja 语法，版本由基座 BOM 仲裁） -->
+        <dependency>
+            <groupId>com.hubspot.jinjava</groupId>
+            <artifactId>jinjava</artifactId>
+        </dependency>
+        <!-- 工作流代码节点沙箱（GraalVM Polyglot API，版本由基座 BOM 仲裁；
+             JS 引擎 org.graalvm.polyglot:js 为运行期可选依赖，部署时按需加入 classpath） -->
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>polyglot</artifactId>
+        </dependency>
+        <!-- Dubbo 支持：optional，RPC 工具泛化调用（GenericService）编译触达；单体 local 模式不加载 -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- 测试积木：JUnit 5 + AssertJ（仅 test 范围）——工具调用终止链路（空结果硬终止/
+             超限文案改写/轮次快照）等纯逻辑单测，不依赖 DB 与模型端点 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

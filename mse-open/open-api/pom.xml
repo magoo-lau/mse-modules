@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-open</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>open-api</artifactId>
+    <name>open-api</name>
+    <description>开放平台注册契约（接口 + Serializable DTO + 自注册推送装配）：业务积木依赖本模块即可把自己的能力自注册到 mse-open 统一开放窗口</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        <!-- 注册推送装配：Spring 事件/环境（运行期宿主必带，provided 不污染业务依赖树） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- dubbo 模式推送：编程式 ReferenceConfig（运行期微服务宿主经 micro-starter 提供）；
+             common-rpc 提供 DubboRuntimeConfigs（宿主经 starter-rpc 传递） -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>common-rpc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

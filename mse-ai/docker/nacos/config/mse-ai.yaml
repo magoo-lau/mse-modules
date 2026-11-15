@@ -1,0 +1,110 @@
+# ==================== mse-ai 专属配置（Data ID: mse-ai.yaml    Group: DEFAULT_GROUP） ====================
+# 本文件是服务 application.yaml 的本地留档：经 init-configs.sh 写入 Nacos 后由配置中心管理，
+# 共享项（master 数据源/Redis/Sa-Token/MyBatis-Plus/Dubbo/租户开关/Seata）见 mse-micro-common/db/dubbo.yaml。
+# 导入：CONFIG_DIR=<本目录> sh mse-framework/docker/nacos/init-configs.sh
+server:
+  port: 8094
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,slowsql
+
+# ==================== Spring AI 默认模型（可选，默认关闭） ====================
+# 本服务无默认 ChatModel Bean（模型经 ai_model 表动态管理、编程式构建）；
+# Spring AI 的 ChatClient 自动装配硬性要求 ChatModel，未配默认模型时须显式关闭。
+# 启用步骤：① ai-boot/pom.xml 引入 spring-ai-starter-model-openai；
+#           ② 下方示例整段取消注释并填入真实 key/base-url/model。
+# 默认模型（spring.ai.*）与 ai_model 表里的动态模型互相独立，对话与知识库仍走 ai_model。
+spring:
+  ai:
+    chat:
+      client:
+        enabled: false
+  # —— 启用示例（取消注释并改 enabled: true）——
+  #  ai:
+  #    chat:
+  #      client:
+  #        enabled: true
+  #    model:
+  #      chat: openai
+  #      embedding: openai
+  #    openai:
+  #      api-key: ${SPRING_AI_OPENAI_API_KEY:sk-xxxx}
+  #      # OpenAI 兼容端点均可（SDK 在 base-url 后追加 /chat/completions）：
+  #      # DeepSeek https://api.deepseek.com、智谱 https://open.bigmodel.cn/api/paas/v4、
+  #      # Ollama http://localhost:11434/v1
+  #      base-url: https://api.openai.com
+  #      timeout: 60s
+  #      chat:
+  #        options:
+  #          model: gpt-4o-mini        # deepseek-chat / glm-4-flash 等
+  #          temperature: 0.7
+  #      embedding:
+  #        options:
+  #          model: text-embedding-3-small
+  #          dimensions: 1024          # 须与 mse.ai.embedding-dimensions 及向量库一致
+
+mse:
+  ai:
+    # 敏感字段（模型 apiKey/开放 API Key）AES-GCM 落库加密密钥——生产必须修改且不落仓库
+    crypt-key: ${MSE_AI_CRYPT_KEY:mse-ai-default-crypt-key-please-change}
+    # SSE 对话超时毫秒
+    sse-timeout-millis: 300000
+    # RPC 工具泛化调用超时毫秒
+    rpc-tool-timeout-millis: 60000
+    # 对话模型单次调用读超时毫秒（非流式=等待完整生成的上限；流式=块间空闲上限，不限制整体时长）
+    chat-timeout-millis: 120000
+    # 对话历史上下文窗口（最近 N 条消息送入模型）
+    memory-window: 40
+    # Milvus 向量库（知识库 RAG）：false 时知识库仅存 MySQL 不向量化
+    milvus-enabled: ${MSE_AI_MILVUS_ENABLED:false}
+    # Milvus 连接（milvus-enabled=true 时生效）
+    milvus-host: ${MSE_MILVUS_HOST:localhost}
+    milvus-port: ${MSE_MILVUS_PORT:19530}
+    # 旧版全局向量模型（兼容保留，可选）：指向 ai_model 记录 id；该指向的模型沿用旧全局集合
+    # mse_ai_kb_v2（存量向量零迁移）。现推荐做法：模型中心新建「向量模型」行并「设默认」，
+    # 知识库各自绑定（解析优先级：知识库绑定 > 本配置 > 默认向量模型行）；配好默认后可删除本配置
+    # embedding-model-id: 1234567890
+    # 旧版全局向量维度（仅旧集合兼容参考；新集合建集合时按模型实测维度）
+    embedding-dimensions: ${MSE_AI_EMBEDDING_DIMENSIONS:1024}
+    # 知识库原文件归档存储：auto（默认，微服务形态走 mse-fs，归档串 fs:{fileId}；未部署 mse-fs 需显式置 local）/ local（本地目录）/ fs
+    # storage-mode: ${MSE_AI_KB_STORAGE_MODE:auto}
+    # 知识库原文件归档目录（storage-mode=local 或 mse-fs 不可用时使用；默认 {user.home}/.mse/ai-kb）
+    # kb-storage-path: /data/mse/ai-kb
+    # 知识库异步解析并发数（解析线程池大小）
+    kb-parse-workers: 2
+    # Rerank 重排模型（OpenAI 兼容 /rerank 协议，平台级；启用后混合召回结果精排再取 TopN，
+    # 未启用或调用失败自动退化为 RRF 融合排序）
+    rerank:
+      enabled: ${MSE_AI_RERANK_ENABLED:false}
+      # base-url: ${MSE_AI_RERANK_BASE_URL:https://api.siliconflow.cn/v1}
+      # api-key: ${MSE_AI_RERANK_API_KEY:sk-xxxx}
+      # model: ${MSE_AI_RERANK_MODEL:BAAI/bge-reranker-v2-m3}
+    # MCP Server（把平台工具/智能体暴露为 MCP；需 ai-boot 已引入 mcp-server starter）
+    mcp-server-enabled: ${MSE_AI_MCP_SERVER_ENABLED:false}
+  # 租户隔离零配置：全部 ai_* 表带 tenant_id（0=平台公共数据）由基座租户插件统一隔离；
+  # 平台公共行经服务层 runAsPlatform 读取，圈定/签发等跨租户操作走 @TenantIgnore
+  service:
+    ai:
+      controller:
+        enabled: true
+
+# ==================== MCP Server（开启 mcp-server-enabled 后生效） ====================
+# spring:
+#   ai:
+#     mcp:
+#       server:
+#         name: mse-ai
+#         version: 1.0.0
+#         type: SYNC
+
+# ==================== Milvus 连接（milvus-enabled=true 时核对） ====================
+# milvus:
+#   host: ${MSE_MILVUS_HOST:localhost}
+#   port: 19530
+
+# ==================== 信创数据库切换（可选 profile，默认 MySQL 不受影响） ====================
+# master 数据源与方言由共享 mse-micro-db.yaml 的 dm/kingbase profile 提供，
+# 启动加 --spring.profiles.active=dm 或 kingbase 即切换；初始化脚本见 mse-ai/sql/dameng、mse-ai/sql/kingbase

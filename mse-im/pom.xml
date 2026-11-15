@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 独立工程：parent 指向基座 mse-starter-parent（编译/插件/BOM/仓库统一收编，随框架 mvn install），
+         仅通过 BOM 消费基座发布件（积木式组装），不属于 ai-mse 聚合模块 -->
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-starter-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>vip.mseapp</groupId>
+    <artifactId>mse-im</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>mse-im</name>
+    <description>即时通讯集成（OpenIM）：账号桥 + IM 会话签发 + 工作台 SSO（im-service）+ 启动器（im-boot）；设计见 docs/tech/openim-integration.md</description>
+
+    <modules>
+        <module>im-api</module>
+        <module>im-service</module>
+        <module>im-boot</module>
+    </modules>
+
+    <properties>
+        <!-- biz↔biz 契约依赖（无 BOM 仲裁，显式版本） -->
+        <ai-api.version>1.0.0-SNAPSHOT</ai-api.version>
+        <open-api.version>1.0.0-SNAPSHOT</open-api.version>
+        
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 本工程模块 -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>im-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>im-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- mse-ai 契约：机器人回复经 mse-ai 智能体生成 -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>ai-api</artifactId>
+                <version>${ai-api.version}</version>
+            </dependency>
+            <!-- mse-open 契约：工作台免登授权凭证归口开放平台应用（校验经 RPC，不落密钥） -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>open-api</artifactId>
+                <version>${open-api.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

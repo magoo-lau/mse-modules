@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-im</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>im-service</artifactId>
+    <name>im-service</name>
+    <description>IM 业务积木（纯 jar，无 main）：OpenIM 账号桥（懒供给/admin token 缓存）+ IM 会话签发 + 工作台 SSO 一次性 code；无业务表（实例绑定走 mse.im.* 配置）</description>
+
+    <dependencies>
+        <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入）。
+             starter-mybatis：P1 起台账/机器人两张 master 通道表（实体 + Lambda 查询，无 XML）；
+             starter-redis 提供 SSO code/回调去重存储，
+             starter-rpc 提供 @RpcReference 契约消费（用户资料经 api-system、AI 对话经 ai-api） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>starter-rpc</artifactId>
+        </dependency>
+        <!-- 本工程契约 + 基座用户契约（昵称/头像/状态经 RPC 获取，不直连基座表） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>im-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-system</artifactId>
+        </dependency>
+        <!-- 基座租户契约（平台端 IM 开通：租户下拉选项经 RemoteTenantService.listTenants，不直连平台库） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-tenant</artifactId>
+        </dependency>
+        <!-- AI 对话契约（P2 机器人：消息回调命中 → mse-ai 智能体生成回复） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>ai-api</artifactId>
+        </dependency>
+        <!-- 文件存储契约（工作台图标上传：mse-fs 优先公开素材通道，未引入自动降级本地磁盘） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-fs</artifactId>
+        </dependency>
+        <!-- 开放平台契约（工作台免登授权：凭证归口 open_app，保存校验/域名白名单/兑换校验经 RPC；
+             mse-open 未部署时 OpenAppAvailableCondition 不装配网关，仅免登授权不可用） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>open-api</artifactId>
+        </dependency>
+        <!-- 框架通知中枢契约（IM 通知渠道向基座 service-system 自注册：RemoteNotifyChannel 门面 + 推送器随 jar） -->
+        <dependency>
+            <groupId>vip.mseapp</groupId>
+            <artifactId>api-notify</artifactId>
+        </dependency>
+    </dependencies>
+</project>

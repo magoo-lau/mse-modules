@@ -1,0 +1,50 @@
+# ==================== mse-monitor 专属配置（Data ID: mse-monitor.yaml    Group: DEFAULT_GROUP） ====================
+# 本文件是服务 application.yaml 的本地留档：经 init-configs.sh 写入 Nacos 后由配置中心管理，
+# 共享项（master 数据源/Redis/Sa-Token/MyBatis-Plus/Dubbo/租户开关/Seata）见 mse-micro-common/db/dubbo.yaml。
+# 导入：CONFIG_DIR=<本目录> sh mse-framework/docker/nacos/init-configs.sh
+server:
+  port: 8097
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,slowsql
+
+mse:
+  service:
+    monitor:
+      controller:
+        enabled: true
+  monitor:
+    # 离线模式（缺省 false=在线）：在线=监控由平台运营（平台端查看/维护，采集按目标归属分库、
+    # 平台目标落平台库；租户端菜单双端存在但人工控制不授权）。true=租户离线私有部署监控自管——
+    # mon_* 采集/查询/告警/通知全部直连本地缺省库（不再路由平台库、不按会话租户过滤，
+    # 本机 OS 目标同落本地），租户授权监控页面后在租户端维护本地监控
+    offline: false
+    # 调度轮询间隔（毫秒）：每轮扫描启用中且到达采集间隔的目标提交线程池探测
+    scan-interval-ms: 10000
+    # 新目标默认采集间隔（秒）
+    default-collect-interval: 30
+    # 采样记录保留天数（每日 04:30 清理）
+    retention-days: 7
+    # 采集线程池并行度
+    executor-parallelism: 4
+    # 各目标服务 actuator 端点鉴权令牌：与服务侧 mse.actuator.auth.token 同源（同一
+    # MSE_ACTUATOR_TOKEN 环境变量占位，Nacos 里两侧各解一次，值一致即可）；空 = 目标服务未开启鉴权
+    actuator-token: ${MSE_ACTUATOR_TOKEN:}
+    probe:
+      # 单次探测超时（毫秒）
+      timeout-ms: 5000
+    redis:
+      # 缓存监控键浏览单次 SCAN 收集上限（超出置 capped 标志，前端提示缩小匹配模式）
+      scan-limit: 5000
+    # 采样清理 cron（默认每日 04:30）
+    # cleanup-cron: "0 30 4 * * ?"
+
+# 告警通知（站内信收件人 / Webhook 机器人地址与格式）不在本文件——
+# 存 mon_setting 表，由监控中心「告警中心 → 通知设置」界面维护。
+
+# ==================== 信创数据库切换（可选 profile，默认 MySQL 不受影响） ====================
+# master 数据源与方言由共享 mse-micro-db.yaml 的 dm/kingbase profile 提供，
+# 启动加 --spring.profiles.active=dm 或 kingbase 即切换；初始化脚本见 mse-monitor/sql/dameng、mse-monitor/sql/kingbase

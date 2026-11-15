@@ -1,0 +1,50 @@
+{
+  "name": "im-desktop",
+  "productName": "ai-mse-chat",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ai-mse 聊天桌面客户端（Electron 壳：服务器设置 + 本地 web + 托盘 + 消息提醒）",
+  "main": "main/main.js",
+  "scripts": {
+    "prepare-web": "cd ../web && npm run build:desktop",
+    "sync-web": "node scripts/sync-web.js",
+    "start": "node scripts/sync-web.js && electron .",
+    "dev": "electron . --dev",
+    "smoke": "electron . --smoke",
+    "notify-test": "electron . --notify-probe",
+    "check": "electron scripts/e2e-check.js",
+    "icons": "node scripts/gen-icons.mjs",
+    "dist": "node scripts/sync-web.js && electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "vip.mseapp.im.desktop",
+    "productName": "ai-mse-chat",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main/**/*",
+      "setup/**/*",
+      "assets/**/*",
+      "web-dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "ai-mse 聊天"
+    }
+  }
+}

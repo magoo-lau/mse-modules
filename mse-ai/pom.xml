@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 独立工程：parent 指向基座 mse-starter-parent（编译/插件/BOM/仓库统一收编，随框架 mvn install），
+         仅通过 BOM 消费基座发布件（积木式组装），不属于 ai-mse 聚合模块 -->
+    <parent>
+        <groupId>vip.mseapp</groupId>
+        <artifactId>mse-starter-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>vip.mseapp</groupId>
+    <artifactId>mse-ai</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>mse-ai</name>
+    <description>AI 智能体平台：模型中心 + 对话 + 智能体 + 工具中心 + 知识库 RAG + MCP + 开放 API（Spring AI 2.x）</description>
+
+    <modules>
+        <module>ai-api</module>
+        <module>ai-service</module>
+        <module>ai-boot</module>
+    </modules>
+
+    <properties>
+        <!-- mse-open 开放平台契约（biz↔biz 依赖，无 BOM 仲裁，显式版本） -->
+        <open-api.version>1.0.0-SNAPSHOT</open-api.version>
+        <!-- 编排代码节点 JS 引擎（运行期依赖，24.2.1 社区版未发布、取同 minor 的 24.2.2） -->
+        <graalvm-js.version>24.2.2</graalvm-js.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 本工程模块 -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>ai-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>ai-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- mse-open 开放平台契约：开放能力自注册（OpenApiContributor/Descriptor） -->
+            <dependency>
+                <groupId>vip.mseapp</groupId>
+                <artifactId>open-api</artifactId>
+                <version>${open-api.version}</version>
+            </dependency>
+            <!-- 编排代码节点 JS 引擎（GraalJS 社区版；聚合 POM，type=pom 拉取引擎与 Truffle；
+                 jinjava/polyglot 版本由基座 BOM 仲裁） -->
+            <dependency>
+                <groupId>org.graalvm.polyglot</groupId>
+                <artifactId>js-community</artifactId>
+                <version>${graalvm-js.version}</version>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

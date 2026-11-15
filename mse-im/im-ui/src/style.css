@@ -1,0 +1,7 @@
+/* wujie 中 iframe 为隐藏容器，100vh 不生效，统一使用 100% 高度链 */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>服务器设置</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: system-ui, 'Segoe UI', sans-serif; font-size: 14px; color: #303133;
+      background: #f2f3f5; display: flex; align-items: center; justify-content: center;
+    }
+    .card {
+      width: 400px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+      padding: 28px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .head { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 44px; height: 44px; border-radius: 10px; }
+    h1 { font-size: 17px; margin: 0; }
+    .sub { margin: 0; font-size: 12px; color: #8a8f99; }
+    label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: #606266; }
+    input {
+      padding: 9px 11px; border: 1px solid #dcdfe6; border-radius: 8px; outline: none;
+      font-size: 14px; color: #303133; background: #fafafa;
+    }
+    input:focus { border-color: #3370ff; background: #fff; }
+    .hint { margin: 0; font-size: 12px; color: #8a8f99; line-height: 1.7; }
+    .status { margin: 0; min-height: 18px; font-size: 12px; color: #8a8f99; }
+    .status.err { color: #e34d59; }
+    .status.ok { color: #34c777; }
+    .foot { display: flex; gap: 10px; }
+    button {
+      flex: 1; padding: 9px 0; border-radius: 8px; border: 1px solid #dcdfe6; background: #fff;
+      color: #303133; font-size: 14px; cursor: pointer;
+    }
+    button:hover { border-color: #3370ff; color: #3370ff; }
+    button.primary { background: #07c160; border-color: #07c160; color: #fff; }
+    button.primary:hover { background: #06ad56; color: #fff; }
+    button:disabled { opacity: .5; cursor: default; }
+    /* 取消显隐由 JS 内联 style 控制（勿写进样式表：内联置 '' 会回落样式表规则） */
+    #cancel { flex: none; width: 88px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">
+      <img class="logo" src="icon.png" alt="" />
+      <div>
+        <h1>服务器设置</h1>
+        <p class="sub">ai-mse 聊天 · 桌面客户端</p>
+      </div>
+    </div>
+    <label>服务器地址
+      <input id="server" placeholder="http://192.168.1.10:8080（单体）或 http://host:48080（网关）"
+             spellcheck="false" />
+    </label>
+    <p class="hint">
+      填 mse 后端地址（单体 8080 / 网关 48080 直连）或部署站点根地址（/api 反代口径），
+      接口口径自动识别；IM 消息服务器地址由服务端登录接口下发，无需在此填写。
+    </p>
+    <p id="status" class="status"></p>
+    <div class="foot">
+      <button id="cancel">取消</button>
+      <button id="test">测试连接</button>
+      <button id="save" class="primary">保存并进入</button>
+    </div>
+  </div>
+  <script>
+    const $ = (s) => document.querySelector(s)
+    const status = (msg, kind) => {
+      const el = $('#status')
+      el.textContent = msg || ''
+      el.className = 'status' + (kind ? ' ' + kind : '')
+    }
+    const busy = (on) => { $('#test').disabled = on; $('#save').disabled = on }
+
+    window.imSetup.get().then((cfg) => {
+      $('#server').value = cfg.serverBase || ''
+      $('#cancel').style.display = cfg.canCancel ? '' : 'none'
+      if (!cfg.serverBase) status('首次使用：请先填写服务器地址')
+    })
+
+    $('#server').addEventListener('input', () => status(''))
+    $('#server').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#save').click() })
+
+    $('#test').addEventListener('click', async () => {
+      busy(true); status('连接测试中…')
+      const r = await window.imSetup.test($('#server').value)
+      busy(false)
+      r.ok ? status(r.message || '连接成功', 'ok') : status(r.error, 'err')
+    })
+
+    $('#save').addEventListener('click', async () => {
+      busy(true); status('保存中…')
+      const r = await window.imSetup.save($('#server').value)
+      busy(false)
+      if (!r.ok) status(r.error, 'err')
+      // 成功后主进程切换到主窗口，本窗口自动隐藏
+    })
+
+    $('#cancel').addEventListener('click', () => window.imSetup.cancel())
+  </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Milvus standalone（知识库 RAG 向量库：稠密 + BM25 全文混合检索）——独立部署物，仅 mse.ai.milvus-enabled=true 时需要
+# 启动：docker compose -f mse-modules/mse-ai/docker/milvus/compose.yaml up -d
+# 版本：全文检索（BM25 Function）要求 Milvus 2.5+，基线钉 2.6 系列正式版（可按需升级更高 2.6.x 补丁）
+# 升级注意：从 2.4 旧 volumes 直接清空重建即可（历史向量数据不迁移；升级后知识库需「重建索引」重新入库）
+# 端口：19530（gRPC，服务连接）/ 9091（健康检查/指标）
+# 数据目录：./volumes 挂载持久化
+name: mse-ai-milvus
+
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.14
+    container_name: mse-milvus-etcd
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    volumes:
+      - ./volumes/etcd:/etcd
+
+  minio:
+    image: minio/minio:RELEASE.2024-05-28T17-19-04Z
+    container_name: mse-milvus-minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: minio server /minio_data
+    volumes:
+      - ./volumes/minio:/minio_data
+
+  milvus:
+    image: milvusdb/milvus:v2.6.0
+    container_name: mse-milvus
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    ports:
+      - "${MSE_MILVUS_PORT:-19530}:19530"
+      - "9091:9091"
+    depends_on:
+      - etcd
+      - minio
+    volumes:
+      - ./volumes/milvus:/var/lib/milvus
