@@ -1,14 +1,14 @@
 # JitPack 构建配置：本仓为 7 个并列独立 Maven 工程（无根聚合 pom），
 # 默认构建只进第一个子目录会因跨工程依赖（ai-service→open-api）失败，
-# 故按依赖序显式逐工程构建（契约工程 open/search 前置），构件经 mvn install
+# 故按依赖序显式逐工程构建（契约工程 open/search 前置，经 Maven Wrapper 固定 Maven 版本），构件经 mvn install
 # 进入本地仓库后由 JitPack 统一收集发布。
 jdk:
   - openjdk21
 install:
-  - mvn -B -ntp install -DskipTests -f mse-open/pom.xml
-  - mvn -B -ntp install -DskipTests -f mse-search/pom.xml
-  - mvn -B -ntp install -DskipTests -f mse-ai/pom.xml
-  - mvn -B -ntp install -DskipTests -f mse-data/pom.xml
-  - mvn -B -ntp install -DskipTests -f mse-fs/pom.xml
-  - mvn -B -ntp install -DskipTests -f mse-im/pom.xml
-  - mvn -B -ntp install -DskipTests -f mse-monitor/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-open/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-search/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-ai/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-data/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-fs/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-im/pom.xml
+  - ./mvnw -B -ntp install -DskipTests -f mse-monitor/pom.xml
