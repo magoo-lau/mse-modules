@@ -6,8 +6,8 @@
 # 环境变量：NPM_FLAGS 透传给 npm（如 --prefer-offline）
 #
 # mse-im/clients/desktop（Electron）平台特定，单独手工构建不入清单。
-# 依赖：mse-ui-shared 经 file: 相对路径引用（$ROOT 上层兄弟目录 mse-framework 仓），
-# 仓间同级摆放时开箱可用；CI 中由 workflow 建软链保证路径成立。
+# mse-ui-shared 为 npm git 依赖（github:magoo-lau/mse-ui-shared#release/1.0.0，
+# 独立仓；根 .npmrc 已放行 allow-git），npm ci 原生解析安装，无需额外步骤。
 # =============================================================================
 set -u
 
@@ -28,6 +28,7 @@ mse-search/search-ui
 "
 
 TARGETS=${*:-$ALL_FRONTENDS}
+
 
 failed=""
 total=0

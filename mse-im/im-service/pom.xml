@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-im</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -20,58 +20,58 @@
              starter-redis 提供 SSO code/回调去重存储，
              starter-rpc 提供 @RpcReference 契约消费（用户资料经 api-system、AI 对话经 ai-api） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-rpc</artifactId>
         </dependency>
         <!-- 本工程契约 + 基座用户契约（昵称/头像/状态经 RPC 获取，不直连基座表） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>im-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-system</artifactId>
         </dependency>
         <!-- 基座租户契约（平台端 IM 开通：租户下拉选项经 RemoteTenantService.listTenants，不直连平台库） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-tenant</artifactId>
         </dependency>
         <!-- AI 对话契约（P2 机器人：消息回调命中 → mse-ai 智能体生成回复） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>ai-api</artifactId>
         </dependency>
         <!-- 文件存储契约（工作台图标上传：mse-fs 优先公开素材通道，未引入自动降级本地磁盘） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-fs</artifactId>
         </dependency>
         <!-- 开放平台契约（工作台免登授权：凭证归口 open_app，保存校验/域名白名单/兑换校验经 RPC；
              mse-open 未部署时 OpenAppAvailableCondition 不装配网关，仅免登授权不可用） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>open-api</artifactId>
         </dependency>
         <!-- 框架通知中枢契约（IM 通知渠道向基座 service-system 自注册：RemoteNotifyChannel 门面 + 推送器随 jar） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-notify</artifactId>
         </dependency>
     </dependencies>

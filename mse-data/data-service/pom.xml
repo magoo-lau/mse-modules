@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-data</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -17,34 +17,34 @@
     <dependencies>
         <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-web</artifactId>
         </dependency>
         <!-- mse-ai 平台契约：智能查询（text2sql）经平台智能体调用本服务的受控查询工具（biz↔biz 依赖，显式版本） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>ai-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-security</artifactId>
         </dependency>
         <!-- 本工程契约 + 开放平台契约（开放能力自注册） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>data-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>open-api</artifactId>
         </dependency>
         <!-- Excel 导出（版本由基座 BOM 仲裁） -->

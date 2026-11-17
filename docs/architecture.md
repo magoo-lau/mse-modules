@@ -8,7 +8,7 @@ mse-<biz>/
 ├── <biz>-api/       # 对外契约（接口 + Serializable DTO；依赖仅基座 common-core）——有对外契约的工程才有
 ├── <biz>-service/   # 业务积木（纯 jar，SPI 自装配；db/<方言>/ 版本化脚本）
 ├── <biz>-boot/      # 启动器（vip.mseapp.boot.<biz>；micro-starter + 自有 service；Dockerfile + k8s）
-└── <biz>-ui/        # wujie 子应用（file:../../../mse-framework/mse-ui-shared）
+└── <biz>-ui/        # wujie 子应用（mse-ui-shared 经 npm git 依赖引入：独立仓 github:magoo-lau/mse-ui-shared）
 ```
 
 ## 二、SPI 装配（对齐基座，硬性要求）

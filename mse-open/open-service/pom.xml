@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-open</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -17,24 +17,24 @@
     <dependencies>
         <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-security</artifactId>
         </dependency>
         <!-- 本工程注册契约（目录自注册接收端：RemoteOpenApiRegistry 实现 + 泛化分发参数 DTO） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>open-api</artifactId>
         </dependency>
         <!-- 泛化分发：dubbo 模式编程式 GenericService 调用业务契约（mse-open 不引任何业务 jar）。
@@ -47,13 +47,13 @@
         </dependency>
         <!-- 泛化分发编程式配置（DubboRuntimeConfigs）：运行期由 micro-starter 传递提供 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>common-rpc</artifactId>
             <scope>provided</scope>
         </dependency>
         <!-- 契约积木：跨模块查询租户状态（open_app 绑定租户校验）的唯一合法依赖 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-tenant</artifactId>
         </dependency>
         <!--
@@ -62,7 +62,7 @@
             单体 local 模式本地直调，微服务 dubbo 模式远程调用 mse-system，本积木不直连 sys_* 表。
         -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-system</artifactId>
         </dependency>
         <dependency>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-ai</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -17,48 +17,48 @@
     <dependencies>
         <!-- 自有契约积木：对外 RPC 契约的实现方 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>ai-api</artifactId>
         </dependency>
         <!-- 开放平台契约：开放能力自注册（OpenApiContributor 推送 mse-open 目录） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>open-api</artifactId>
         </dependency>
         <!-- 文件存储契约：知识库原文件归档走 mse-fs（FsAvailableCondition 判定；未引入降级本地目录） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-fs</artifactId>
         </dependency>
         <!-- 基座租户契约：平台端租户下拉选择（单体本地直调 / 微服务 Dubbo，mse-open 同款接法） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-tenant</artifactId>
         </dependency>
         <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-rpc</artifactId>
         </dependency>
         <!-- AI 基础设施装配基线（ChatClient 语义与平台一致；本积木自带动态多模型工厂） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-ai</artifactId>
         </dependency>
         <!-- Spring AI：OpenAI 兼容协议（DeepSeek/智谱/Ollama 均为此协议），版本由基座 BOM 仲裁（2.0.1）。

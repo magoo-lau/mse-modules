@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-fs</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -20,12 +20,12 @@
              （鉴权数据源 @SaCheckPermission / 独立库租户路由 / 操作日志 RPC 回退，本服务不打包基座 HTTP 接口）
              + Seata 内置 + actuator + 三方言 JDBC 驱动 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>micro-starter</artifactId>
         </dependency>
         <!-- 自有业务积木 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>fs-service</artifactId>
         </dependency>
         <!-- S3 兼容客户端（RustFS 1.x）：fs-service 中为 optional 不传递，启动器显式引入后

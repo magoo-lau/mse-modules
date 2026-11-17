@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-fs</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -17,30 +17,30 @@
     <dependencies>
         <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-security</artifactId>
         </dependency>
         <!-- 文件存储契约（框架区 mse-api，实现方为本模块；BOM 仲裁版本） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-fs</artifactId>
         </dependency>
         <!-- 开放平台契约：OpenApiContributor 自注册（开放上传/查询/下载/删除到 mse-open 目录） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>open-api</artifactId>
         </dependency>
         <!-- 租户契约：存储迁移逐租户世界扫描（RemoteTenantService.listTenants，单体本地实现/微服务 dubbo） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-tenant</artifactId>
         </dependency>
         <!-- S3 兼容客户端（RustFS 1.x / MinIO 等）：optional 不传递——嵌入方（如单体）不引即纯本地

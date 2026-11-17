@@ -51,4 +51,4 @@ java -jar mse-open/open-boot/target/open-boot-1.0.0-SNAPSHOT.jar      # 8092，�
 sh build-ui.sh mse-open/open-ui     # 单独构建（npm ci + type-check --if-present + build --base=/sub-apps/open/）
 ```
 
-UI 经 `file:../../../mse-framework/mse-ui-shared` 源码直出（仓间同级摆放开箱可用）；本地 dev proxy `/api` → 网关 48080 或单体 8080。
+UI 的 mse-ui-shared 为 npm git 依赖（独立仓 `github:magoo-lau/mse-ui-shared#release/1.0.0`；根 .npmrc 已放行 allow-git，npm ci 原生安装）；本地 dev proxy `/api` → 网关 48080 或单体 8080。

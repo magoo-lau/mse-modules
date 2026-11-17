@@ -3,7 +3,7 @@
 本目录存放基于 `mse-framework` 底座组装的**独立业务工程**。约定与示例工程 `mse-sample/mse-demo/` 一致：
 
 - 每个业务工程是独立 Maven 工程（自带父 pom），**不加入** `ai-mse` 根 pom 的 `<modules>`；
-- 通过 `dependencyManagement` import 框架 BOM `vip.mseapp:mse-dependencies` 消费底座发布件（先在根目录 `mvn install`）；
+- 通过 `dependencyManagement` import 框架 BOM `com.github.magoo-lau.mse-framework:mse-dependencies` 消费底座发布件（本地顺序构建或经 JitPack 解析）；
 - 模块命名以**业务名-**开头：`xxx-service`（业务积木，纯 jar，**必须经 Spring Boot SPI 接入**）+ `xxx-boot`（微服务启动器，启动类在 `vip.mseapp.boot.<biz>`，纯 `@SpringBootApplication`）；
 - `xxx-boot` 为**纯微服务启动器**：依赖 `micro-starter`（微服务形态入口启动器：Nacos + Dubbo + starter-bridge 契约消费桥接 + Seata 内置 + 三方言驱动）+ 自有业务积木，**不依赖基座 service-system/platform/auth**——登录/系统管理/租户管理的 HTTP 接口收敛在基座微服务（mse-auth/mse-system/mse-platform），业务服务经契约消费基座数据，避免每个微服务重复暴露基座端点与重复导出基座 Dubbo provider；本地仅 `application.yaml`（应用名 + spring.config.import 引共享 `mse-micro-common/db/dubbo.yaml` 与服务专属 Data ID），数据源/Redis/Sa-Token/Dubbo 等统一在 Nacos 管理，`mse.rpc.mode` 由 micro-starter 默认 dubbo，启动即注册、由网关 `lb://mse-xxx` 路由；服务专属配置留档在工程自己的 `docker/nacos/config/<应用名>.yaml`，经 `CONFIG_DIR=<该目录> sh mse-framework/docker/nacos/init-configs.sh` 导入 Nacos；要聚合单体时把业务积木 jar（如 `oa-service`）聚进单体启动器（参考 `mse-sample/mse-monolith/`），不依赖 Nacos；
 - 前端形态：服务专属子应用放本工程（`xxx-ui`，复制 `mse-sample/mse-ui-sub` 模板），多个服务共享的前端放本目录 `modules-ui/`（暂无）；在基座 `mse-framework/mse-ui/src/micro/apps.ts` 注册表或平台端「子应用管理」登记；

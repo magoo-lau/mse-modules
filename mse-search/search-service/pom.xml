@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>vip.mseapp</groupId>
+        <groupId>com.github.magoo-lau.mse-modules</groupId>
         <artifactId>mse-search</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -17,46 +17,46 @@
     <dependencies>
         <!-- 自有契约积木：源登记契约实现方 + 增量数据提供者契约消费方 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-modules</groupId>
             <artifactId>search-api</artifactId>
         </dependency>
         <!-- 基座数据范围查询契约：个人数据过滤（微服务形态经 RPC 解析当前用户数据范围）；
              调试选项（用户/部门）同经该契约获取 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-system</artifactId>
         </dependency>
         <!-- 基座租户契约：调试选项接口的租户下拉（RemoteTenantService.listTenants） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>api-tenant</artifactId>
         </dependency>
         <!-- 基座技术积木（starter-* 内部装配件：自动装配随 jar 走，工具本体经其传递带入） -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>starter-rpc</artifactId>
         </dependency>
         <!-- common-mq：索引事件消费（RocketMQListener 编译触达）+ 业务侧事件约定的 TenantEvent 结构。
              装配在 boot 层引 mq-starter 才生效（search-boot 已引）；未配置 RocketMQ 时监听器不注册，
              增量由定时扫描兜底 -->
         <dependency>
-            <groupId>vip.mseapp</groupId>
+            <groupId>com.github.magoo-lau.mse-framework</groupId>
             <artifactId>common-mq</artifactId>
         </dependency>
         <!-- Elasticsearch 客户端（Boot 4 BOM 仲裁 elasticsearch-java 9.2.9；自动装配经

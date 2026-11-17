@@ -23,7 +23,7 @@ TEST_FLAG="-DskipTests"
 if [ -n "${MSE_MODULES:-}" ]; then
   PROJECTS=${MSE_MODULES}
 else
-  PROJECTS="mse-ai mse-data mse-fs mse-im mse-monitor mse-open mse-search"
+  PROJECTS="mse-open mse-search mse-ai mse-data mse-fs mse-im mse-monitor"
 fi
 
 fail=""
