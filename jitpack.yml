@@ -5,10 +5,10 @@
 jdk:
   - openjdk21
 install:
-  - ./mvnw -B -ntp install -DskipTests -f mse-open/pom.xml
-  - ./mvnw -B -ntp install -DskipTests -f mse-search/pom.xml
-  - ./mvnw -B -ntp install -DskipTests -f mse-ai/pom.xml
-  - ./mvnw -B -ntp install -DskipTests -f mse-data/pom.xml
-  - ./mvnw -B -ntp install -DskipTests -f mse-fs/pom.xml
-  - ./mvnw -B -ntp install -DskipTests -f mse-im/pom.xml
-  - ./mvnw -B -ntp install -DskipTests -f mse-monitor/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-open/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-search/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-ai/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-data/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-fs/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-im/pom.xml
+  - sh ./mvnw -B -ntp install -DskipTests -f mse-monitor/pom.xml
